@@ -13,8 +13,20 @@ public class User extends Person {
 
     // getter & setters
 
-    public boolean isMember() {
-        return true;
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     // methods
@@ -32,6 +44,10 @@ public class User extends Person {
     }
 
     public void applyForMembership() {
+    }
+
+    public boolean isMember() {
+        return true;
     }
 
 }
