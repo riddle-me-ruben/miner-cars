@@ -35,6 +35,10 @@ public class Utils {
         
         Scanner s = new Scanner(System.in);
 
-        return s.nextInt();
+        try{
+            return s.nextInt();
+        } catch (java.util.InputMismatchException e) {
+            return -1;
+        }
     }
 }
