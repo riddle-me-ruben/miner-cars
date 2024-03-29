@@ -4,44 +4,56 @@ package entity;
  * The user class is to maintain and manage data of customers.
  */
 public class User extends Person {
+    private double balance;
 
-    /**
-     * Username of customer.
-     */
-    private String userName;
+    private int carsPurchased;
 
-    /**
-     * Password of customer.
-     */
-    private String password;
+    private boolean isMember;
 
-    /**
-     * Allows users to log in.
-     */
-    @Override
-    public void login() {
-        System.out.println("User logging in");
+    // constructor
+
+    public User (
+        int id, String firstName, String lastName, String username, String password,
+        double balance, int carsPurchased, boolean isMember
+    ) {
+        super(id, firstName, lastName, username, password);
+        this.balance = balance;
+        this.carsPurchased = carsPurchased;
+        this.isMember = isMember;
     }
 
-    // getter & setters
-    
-    public String getUserName() {
-        return userName;
+    // getters & setters
+
+    public double getBalance() {
+        return balance;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setBalance(double balance) {
+        this.balance = balance;
     }
 
-    public String getPassword() {
-        return password;
+    public double getCarsPurchased() {
+        return carsPurchased;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setCarsPurchased(int carsPurchased) {
+        this.carsPurchased = carsPurchased;
+    }
+
+    public boolean getIsMember() {
+        return isMember;
+    }
+
+    public void setIsMember(boolean isMember) {
+        this.isMember = isMember;
     }
 
     // methods
+
+    // @Override
+    // public void login() {
+    //     System.out.println("Logging in");
+    // }
 
     public void viewCars() {
     }
@@ -54,12 +66,4 @@ public class User extends Person {
 
     public void viewTicket() {
     }
-
-    public void applyForMembership() {
-    }
-
-    public boolean isMember() {
-        return true;
-    }
-
 }
