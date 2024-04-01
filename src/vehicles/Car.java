@@ -1,8 +1,28 @@
 package vehicles;
+import UI.Utils;
 /**
  * Car class that describes the state of a car.
  */
 public abstract class Car {
+
+    /**
+     * Constructs car objects based off of data from car_data.csv
+     */
+    public Car(int carID, String type, String model, boolean isNew, String color, int capacity,
+        int mileage, String fuelType, boolean isAutomatic, String vin, double price, int vehiclesRemaining) {
+        this.carID = carID;
+        this.type = type;
+        this.model = model;
+        this.isNew = isNew;
+        this.color = color;
+        this.capacity = capacity;
+        this.mileage = mileage;
+        this.fuelType = fuelType;
+        this.isAutomatic = isAutomatic;
+        this.vin = vin;
+        this.price = price;
+        this.vehiclesRemaining = vehiclesRemaining;
+    }
 
     // attributes
 
@@ -73,18 +93,18 @@ public abstract class Car {
      */
     @Override
     public String toString() {
-        return 
-        "ID: " + getCarID() + "\n" +
-        "Car Type: " + getType() + "\n" +
-        "Model: " + getModel() + "\n" + 
-        "Condition: " + (isNew() ? "New" : "Used") + "\n" +
-        "Color: " + getColor() + "\n" +
-        "Capacity: " + getCapacity() + "\n" +
-        "Mileage: " + getMileage() + "\n" + 
-        "Fuel Type: " + getFuelType() + "\n" + 
-        "Transmission: " + (isAutomatic() ? "Automatic" : "Manual") + "\n" +
-        "VIN: " + getVin() + "\n" +
-        "Price: " + getPrice() + "\n" + 
+        Utils.line();
+        return "ID: " + getCarID() + "\t" +
+        "Car Type: " + getType() + "\t" +
+        "Model: " + getModel() + "\t" + 
+        "Condition: " + (isNew() ? "New" : "Used") + "\t" +
+        "Color: " + getColor() + "\t" +
+        "Capacity: " + getCapacity() + "\t" +
+        "Mileage: " + getMileage() + "\t" + 
+        "Fuel Type: " + getFuelType() + "\t" + 
+        "Transmission: " + (isAutomatic() ? "Automatic" : "Manual") + "\t" +
+        "VIN: " + getVin() + "\t" +
+        "Price: " + getPrice() + "\t" + 
         "Cars Available: " + getVehiclesRemaining()
         ; }
     

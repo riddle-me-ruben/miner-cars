@@ -4,11 +4,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import vehicles.Car;
-import vehicles.Hatchback;
-import vehicles.Pickup;
-import vehicles.SUV;
-import vehicles.Sedan;
+import vehicles.*;
 import entity.*;
 import UI.*;
 
@@ -164,7 +160,9 @@ public class RunShop {
     }
 
     private static void displayAllCars() {
-        System.out.println("All cars!");
+        for (Car car : cars) {
+            System.out.println(car);
+        }
     }
 
     private static void filterCars() {
@@ -189,7 +187,7 @@ public class RunShop {
             
             while (csvLineScanner.hasNextLine()) {
                 String line = csvLineScanner.nextLine();
-
+                
                 if (!firstRowSkipped) {
                     firstRowSkipped = true;
                     continue;
@@ -235,48 +233,39 @@ public class RunShop {
 
             while (csvCarScanner.hasNextLine()) {
                 String[] line = csvCarScanner.nextLine().split(",");
-                
-                //testing
-                for (String l : line) {
-                    System.out.print(l + " ");
+                Car car = null;
+                switch(line[1]) {
+                    case("SUV"): {car = createCar(SUV.class, line); break;}
+                    case("Sedan"): {car = createCar(Sedan.class, line); break;}
+                    case("Pickup"): {car = createCar(Pickup.class, line); break;}
+                    case("Hatchback"): {car = createCar(Hatchback.class, line); break;}
                 }
-
-                System.out.println();
-                Car car = carFactory(line);
                 cars.add(car);
-
             }
         }
         catch(FileNotFoundException e) {
             System.err.println("Cars csv file " + sourceCSV + " not found");
             System.exit(1);
         }
-
+        // displayAllCars();
     }
 
-    private static Car carFactory(String[] contents) {
-        Car c = null;
-        switch(contents[1]) {
-            case("Hatchback"): c = new Hatchback(Integer.valueOf(contents[0]), contents[1], 
-            contents[2], Boolean.valueOf(contents[3]), contents[4], Integer.valueOf(contents[5]),
-            Integer.valueOf(contents[6]), contents[7], Boolean.valueOf(contents[8]), contents[9], Double.valueOf(contents[10]),
-            Integer.valueOf(contents[11])); break;
-
-            case("Pickup"): c = new Pickup(Integer.valueOf(contents[0]), contents[1], 
-            contents[2], Boolean.valueOf(contents[3]), contents[4], Integer.valueOf(contents[5]),
-            Integer.valueOf(contents[6]), contents[7], Boolean.valueOf(contents[8]), contents[9], Double.valueOf(contents[10]),
-            Integer.valueOf(contents[11]));
-
-            case("SUV"): c = new SUV(Integer.valueOf(contents[0]), contents[1], 
-            contents[2], Boolean.valueOf(contents[3]), contents[4], Integer.valueOf(contents[5]),
-            Integer.valueOf(contents[6]), contents[7], Boolean.valueOf(contents[8]), contents[9], Double.valueOf(contents[10]),
-            Integer.valueOf(contents[11]));
-
-            case("Sedan"): c = new Sedan(Integer.valueOf(contents[0]), contents[1], 
-            contents[2], Boolean.valueOf(contents[3]), contents[4], Integer.valueOf(contents[5]),
-            Integer.valueOf(contents[6]), contents[7], Boolean.valueOf(contents[8]), contents[9], Double.valueOf(contents[10]),
-            Integer.valueOf(contents[11]));
+    private static <T extends Car> Car createCar(Class<T> carClass, String[] contents) {
+        try {
+            return carClass.getConstructor(
+                    int.class, String.class, String.class, boolean.class, String.class, int.class,
+                    int.class, String.class, boolean.class, String.class, double.class, int.class
+            ).newInstance(
+                    Integer.parseInt(contents[0]), contents[1], contents[2], Boolean.parseBoolean(contents[3]),
+                    contents[4], Integer.parseInt(contents[5]), Integer.parseInt(contents[6]),
+                    contents[7], Boolean.parseBoolean(contents[8]), contents[9], Double.parseDouble(contents[10]),
+                    Integer.parseInt(contents[11])
+            );
+        } 
+        catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(e);
+            return null;
         }
-        return c;
     }
 }
