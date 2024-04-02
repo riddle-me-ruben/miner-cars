@@ -4,7 +4,12 @@ package vehicles;
  * Hatchback class.
  */
 public class Hatchback extends Car {
-    public Hatchback(int carID, String type, String model, boolean isNew, String color, int capacity, int mileage, String fuelType, boolean isAutomatic, String vin, double price, int vehiclesRemaining) {
-        super(carID, type, model, isNew, color, capacity, mileage, fuelType, isAutomatic, vin, price, vehiclesRemaining);
+    /**
+     * 
+     * @param contents string array from csv data that contains carID, type, model, isNew, color, capacity, milage,
+     * fueltype, isAutomatic, VIN number, price, and the number of vehicles remaining in the shop.
+     */
+    public Hatchback(String[] contents) {
+        super(contents);
     }
 }

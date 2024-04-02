@@ -38,7 +38,8 @@ public class RunShop {
         loadUsers("../data/user_data.csv");
         loadCars("../data/car_data.csv");
 
-        loginScreen();
+        //loginScreen();
+        userLogin();
     }
 
     // helper methods
@@ -165,12 +166,48 @@ public class RunShop {
         }
     }
 
+    private static void displayUsedCars() {
+        for (Car car : cars) {
+            if (!car.isNew()) {
+                System.out.println(car);
+            }
+        }
+    }
+
+    private static void displayNewCars() {
+        for (Car car : cars) {
+            if (car.isNew()) {
+                System.out.println(car);
+            }
+        }
+    }
+
     private static void filterCars() {
-        System.out.println("Filter cars!");
+        while(true) {
+            Utils.line();
+            System.out.println("Options:");
+            System.out.println("1 - Display New Cars");
+            System.out.println("2 - Display Used Cars");
+            System.out.println("3 - Go back");
+
+            // get input
+            int command = Utils.inputOneInt("Enter command: ");
+
+            Utils.clear();
+
+            switch(command) {
+                case(1): {displayNewCars();}; break;
+                case(2): {displayUsedCars();} break;
+                case(3): return;
+                // command returned -1 meaning the user entered something other than an int
+                default: System.out.println("Invalid command"); continue;
+            }
+        }
     }
 
     private static void purchaseCar() {
         System.out.println("Purchase car!");
+
     }
 
     private static void viewTickets() {
@@ -235,10 +272,10 @@ public class RunShop {
                 String[] line = csvCarScanner.nextLine().split(",");
                 Car car = null;
                 switch(line[1]) {
-                    case("SUV"): {car = createCar(SUV.class, line); break;}
-                    case("Sedan"): {car = createCar(Sedan.class, line); break;}
-                    case("Pickup"): {car = createCar(Pickup.class, line); break;}
-                    case("Hatchback"): {car = createCar(Hatchback.class, line); break;}
+                    case("SUV"): {car = new SUV(line); break;}
+                    case("Sedan"): {car = new Sedan(line); break;}
+                    case("Pickup"): {car = new Pickup(line); break;}
+                    case("Hatchback"): {car = new Hatchback(line); break;}
                 }
                 cars.add(car);
             }
@@ -248,24 +285,5 @@ public class RunShop {
             System.exit(1);
         }
         // displayAllCars();
-    }
-
-    private static <T extends Car> Car createCar(Class<T> carClass, String[] contents) {
-        try {
-            return carClass.getConstructor(
-                    int.class, String.class, String.class, boolean.class, String.class, int.class,
-                    int.class, String.class, boolean.class, String.class, double.class, int.class
-            ).newInstance(
-                    Integer.parseInt(contents[0]), contents[1], contents[2], Boolean.parseBoolean(contents[3]),
-                    contents[4], Integer.parseInt(contents[5]), Integer.parseInt(contents[6]),
-                    contents[7], Boolean.parseBoolean(contents[8]), contents[9], Double.parseDouble(contents[10]),
-                    Integer.parseInt(contents[11])
-            );
-        } 
-        catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(e);
-            return null;
-        }
     }
 }

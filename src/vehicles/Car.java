@@ -8,23 +8,21 @@ public abstract class Car {
     /**
      * Constructs car objects based off of data from car_data.csv
      */
-    public Car(int carID, String type, String model, boolean isNew, String color, int capacity,
-        int mileage, String fuelType, boolean isAutomatic, String vin, double price, int vehiclesRemaining) {
-        this.carID = carID;
-        this.type = type;
-        this.model = model;
-        this.isNew = isNew;
-        this.color = color;
-        this.capacity = capacity;
-        this.mileage = mileage;
-        this.fuelType = fuelType;
-        this.isAutomatic = isAutomatic;
-        this.vin = vin;
-        this.price = price;
-        this.vehiclesRemaining = vehiclesRemaining;
-    }
 
-    // attributes
+    public Car(String[] contents) {
+        this.carID = Integer.parseInt(contents[0]);
+        this.type = contents[1];
+        this.model = contents[2];
+        this.isNew = contents[3].equals("New") ? true : false;
+        this.color = contents[4];
+        this.capacity = Integer.parseInt(contents[5]);
+        this.mileage = Integer.parseInt(contents[6]);
+        this.fuelType = contents[7];
+        this.isAutomatic = contents[8].equals("Automatic") ? true : false;
+        this.vin = contents[9];
+        this.price = Double.parseDouble(contents[10]);
+        this.vehiclesRemaining = Integer.parseInt(contents[11]);
+    }
 
     /**
      * Car ID number used for shop identification purposes.
