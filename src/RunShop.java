@@ -3,6 +3,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import vehicles.*;
 import entity.*;
@@ -38,7 +40,7 @@ public class RunShop {
         loadUsers("../data/user_data.csv");
         loadCars("../data/car_data.csv");
 
-        //loginScreen();
+        // loginScreen();
         userLogin();
     }
 
@@ -164,6 +166,26 @@ public class RunShop {
         for (Car car : cars) {
             System.out.println(car);
         }
+
+        System.out.println("");
+        System.out.println("Row content:");
+        System.out.println("[ID \t Type \t Mode \t Condition \t Color \t Capacity \t Mileage \t Fuel Type \t Transmission Type \t VIN \t Price \t Cars Available]");
+    }
+
+    private static void displayUsedCars() {
+        for (Car car : cars) {
+            if (!car.isNew()) {
+                System.out.println(car);
+            }
+        }
+    }
+
+    private static void displayNewCars() {
+        for (Car car : cars) {
+            if (car.isNew()) {
+                System.out.println(car);
+            }
+        }
     }
 
     private static void displayUsedCars() {
@@ -206,7 +228,119 @@ public class RunShop {
     }
 
     private static void purchaseCar() {
-        System.out.println("Purchase car!");
+        while(true) {
+            Utils.line();
+
+            // testing purposes
+            User currentUser = users.get("batman");
+            System.out.println("Your balance is " + currentUser.getBalance());
+            
+            System.out.println("Options:");
+            System.out.println("# - Enter ID of desired car");
+            System.out.println("0 - Go back");
+
+            // get input
+            int command = Utils.inputOneInt("Enter ID of desired car: ");
+
+            Utils.clear();
+            
+            // Go back
+            if (command == 0) {
+                return;
+            }
+            // User did not enter an int
+            else if (command == -1) {
+                System.out.println("Invalid command");
+            }
+            // User entered an ID that was out of bounds
+            else if (command < 0 || command > cars.size()) {
+                System.out.println("Invalid car ID");
+            }
+            else {
+                Car desiredCar = cars.get(command - 1);
+                if(desiredCar.getVehiclesRemaining() == 0) {
+                    System.out.println("Sorry,\n" + desiredCar + "\nis out of stock :(");
+                    continue;
+                }
+                // Verify the user has sufficient funds
+                if (currentUser.getBalance() >= desiredCar.getPrice()) {
+                    // method that confirms if the user wants to follow through with the purchase.
+                    if(!confirmPurchase(desiredCar)) {
+                        continue;
+                    }
+                    currentUser.setBalance(currentUser.getBalance() - desiredCar.getPrice());
+                    currentUser.setCarsPurchased(currentUser.getCarsPurchased() + 1);
+                    // decrement count of vehicle
+                    desiredCar.setVehiclesRemaining(desiredCar.getVehiclesRemaining() - 1);
+                    // decrement from csv
+                    decrementCarFromCSV("../data/car_data.csv", desiredCar.getCarID());
+                    System.out.println("Succesfully purchased:\n" + desiredCar);
+
+                    // TODO: Add to log
+                    // addToLog() - TODO by Ashkan
+                    // updateUserBalanceinCSV - TODO by Ashkan
+                }
+                else {
+                    System.out.println("Sorry,\n" + desiredCar + "\ncosts $" + desiredCar.getPrice() + " but you only have $" + currentUser.getBalance());
+                }
+            }
+
+        }
+
+    }
+
+    /**
+     * Ensures the user wants to make the purchase.
+     * @param desiredCar object of type Car that the user wishes to purchase.
+     * @return true if the customer wishes to proceed with the purchase, false if the user changed their mind.
+     */
+    private static boolean confirmPurchase(Car desiredCar) {
+        while (true) {
+            System.out.println("Are you sure you want to purchase?\n" + desiredCar);
+            System.out.println("1 - Yes");
+            System.out.println("2 - No");
+            int decision = Utils.inputOneInt("Enter command: ");
+            Utils.clear();
+            if (decision == -1) {
+                System.out.println("Invalid command");
+                continue;
+            }
+            else if (decision == 1) {return true;}
+            else {return false;}
+        }
+    }
+
+    private static void decrementCarFromCSV(String sourceCSV, int id) {
+        File inputFile = new File(sourceCSV);
+        File tempFile = new File("temp.csv");
+
+        try {
+            Scanner scanner = new Scanner(inputFile);
+            FileWriter writer = new FileWriter(tempFile);
+            writer.write(scanner.nextLine() + "\n");
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] parts = line.split(",");
+                int idToRemove = Integer.parseInt(parts[0]);
+                if (id == idToRemove) {
+                    parts[11] = "" + (cars.get(id - 1).getVehiclesRemaining());
+                    line = String.join(",", parts);
+                }
+                writer.write(line + "\n");
+            }
+
+            scanner.close();
+            writer.close();
+        } catch (FileNotFoundException e) {
+            System.err.println("File not found: " + sourceCSV);
+        } catch (IOException e) {
+            System.err.println("Error reading or writing file: " + e.getMessage());
+        }
+
+        // Replace the original file with the temporary file
+        if (!tempFile.renameTo(inputFile)) {
+            System.err.println("Could not rename temporary file");
+        }
 
     }
 
