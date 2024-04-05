@@ -49,7 +49,7 @@ public class User extends Person {
     }
 
     // static methods
-    public static void print(User u) {
+    public static void printUser(User u) {
         System.out.println(
             "" + u.getIdNumber() + "\t" +
             u.getFirstName() + "\t" + 
