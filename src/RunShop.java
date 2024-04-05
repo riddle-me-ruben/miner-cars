@@ -40,11 +40,9 @@ public class RunShop {
         loadUsers("../data/user_data.csv");
         loadCars("../data/car_data.csv");
 
-        // loginScreen();
+        loginScreen();
         userLogin();
     }
-
-    // helper methods
 
     private static void loginScreen() {
         Utils.clear();
@@ -154,7 +152,7 @@ public class RunShop {
 
     private static void displayAllUsers() {
         for (User user : users.values()) {
-            User.print(user);
+            User.printUser(user);
         }
 
         System.out.println("");
@@ -172,34 +170,25 @@ public class RunShop {
         System.out.println("[ID \t Type \t Mode \t Condition \t Color \t Capacity \t Mileage \t Fuel Type \t Transmission Type \t VIN \t Price \t Cars Available]");
     }
 
-    private static void displayUsedCars() {
-        for (Car car : cars) {
-            if (!car.isNew()) {
-                System.out.println(car);
+    /**
+     * Prints used or new cars depending on what the user desires.
+     * @param printNew true if user wants to print new cars, false otherwise
+     */
+    private static void displayFilteredCars(boolean printNew) {
+        // user wants to print new cars
+        if (printNew) {
+            for (Car car : cars) {
+                if (car.isNew()) {
+                    System.out.println(car);
+                }
             }
         }
-    }
-
-    private static void displayNewCars() {
-        for (Car car : cars) {
-            if (car.isNew()) {
-                System.out.println(car);
-            }
-        }
-    }
-
-    private static void displayUsedCars() {
-        for (Car car : cars) {
-            if (!car.isNew()) {
-                System.out.println(car);
-            }
-        }
-    }
-
-    private static void displayNewCars() {
-        for (Car car : cars) {
-            if (car.isNew()) {
-                System.out.println(car);
+        // user wants to print used cars
+        else {
+            for (Car car : cars) {
+                if (!car.isNew()) {
+                    System.out.println(car);
+                }
             }
         }
     }
@@ -218,8 +207,8 @@ public class RunShop {
             Utils.clear();
 
             switch(command) {
-                case(1): {displayNewCars();}; break;
-                case(2): {displayUsedCars();} break;
+                case(1): {displayFilteredCars(true);} break;
+                case(2): {displayFilteredCars(false);} break;
                 case(3): return;
                 // command returned -1 meaning the user entered something other than an int
                 default: System.out.println("Invalid command"); continue;
