@@ -41,6 +41,7 @@ public class User extends Person {
                 String[] parts = line.split(",");
                 if (parts[6].equals(getUsername())) {
                     parts[3] = "" + getBalance();
+                    parts[4] = "" + getCarsPurchased();
                 }
                 line = String.join(",", parts);
                 writer.write(line + "\n");
