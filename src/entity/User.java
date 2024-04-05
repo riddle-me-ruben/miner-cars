@@ -1,5 +1,11 @@
 package entity;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Scanner;
+
 /**
  * The user class is to maintain and manage data of customers.
  */
@@ -21,6 +27,39 @@ public class User extends Person {
         this.carsPurchased = carsPurchased;
         this.isMember = isMember;
     }
+
+    public void updateBalanceInCSV(String sourceCSV) {
+        File inputFile = new File(sourceCSV);
+        File tempFile = new File("temp.csv");
+
+        try {
+            Scanner scanner = new Scanner(inputFile);
+            FileWriter writer = new FileWriter(tempFile);
+            writer.write(scanner.nextLine() + "\n");
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] parts = line.split(",");
+                if (parts[6].equals(getUsername())) {
+                    parts[3] = "" + getBalance();
+                }
+                line = String.join(",", parts);
+                writer.write(line + "\n");
+            }
+
+            scanner.close();
+            writer.close();
+        } catch (FileNotFoundException e) {
+            System.err.println("File not found: " + sourceCSV);
+        } catch (IOException e) {
+            System.err.println("Error reading or writing file: " + e.getMessage());
+        }
+
+        // Replace the original file with the temporary file
+        if (!tempFile.renameTo(inputFile)) {
+            System.err.println("Could not rename temporary file");
+        }
+    }
+
 
     // getters & setters
 

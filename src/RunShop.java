@@ -26,6 +26,10 @@ public class RunShop {
 
     private static Person currentPerson;
 
+    private static String carSourceCSV = "../data/car_data.csv";
+
+    private static String userSourceCSV = "../data/user_data.csv";
+
     // Using a hashmap to quickly match the entered username (in login prompt)
     // to a valid user in the database. Awesome efficiency.
     private static HashMap<String, User> users = new HashMap<String, User>();
@@ -37,8 +41,8 @@ public class RunShop {
      */    
     public static void main(String[] args) {
 
-        loadUsers("../data/user_data.csv");
-        loadCars("../data/car_data.csv");
+        loadUsers(userSourceCSV);
+        loadCars(carSourceCSV);
 
         loginScreen();
         userLogin();
@@ -217,18 +221,17 @@ public class RunShop {
     }
 
     private static void purchaseCar() {
+        User currentUser = (User) currentPerson;
         while(true) {
             Utils.line();
 
-            // testing purposes
-            User currentUser = users.get("batman");
             System.out.println("Your balance is " + currentUser.getBalance());
             
             System.out.println("Options:");
             System.out.println("# - Enter ID of desired car");
             System.out.println("0 - Go back");
 
-            // get input
+            // get ID of desired car
             int command = Utils.inputOneInt("Enter ID of desired car: ");
 
             Utils.clear();
@@ -257,17 +260,23 @@ public class RunShop {
                     if(!confirmPurchase(desiredCar)) {
                         continue;
                     }
-                    currentUser.setBalance(currentUser.getBalance() - desiredCar.getPrice());
+
+                    //update userInfo
+                    currentUser.setBalance(Math.round((currentUser.getBalance() - desiredCar.getPrice()) * 100.0) / 100.0);
                     currentUser.setCarsPurchased(currentUser.getCarsPurchased() + 1);
+                    currentUser.updateBalanceInCSV(userSourceCSV);
+
                     // decrement count of vehicle
                     desiredCar.setVehiclesRemaining(desiredCar.getVehiclesRemaining() - 1);
-                    // decrement from csv
-                    decrementCarFromCSV("../data/car_data.csv", desiredCar.getCarID());
+                    
+                    // decrement count from csv
+                    decrementCarFromCSV(carSourceCSV, desiredCar.getCarID());
+
                     System.out.println("Succesfully purchased:\n" + desiredCar);
 
                     // TODO: Add to log
                     // addToLog() - TODO by Ashkan
-                    // updateUserBalanceinCSV - TODO by Ashkan
+
                 }
                 else {
                     System.out.println("Sorry,\n" + desiredCar + "\ncosts $" + desiredCar.getPrice() + " but you only have $" + currentUser.getBalance());
