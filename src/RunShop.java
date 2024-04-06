@@ -50,6 +50,10 @@ import UI.*;
  */
 public class RunShop {
 
+    // constants
+
+    private static final String DATADIR = "../data";
+
     // Global Variables.
     /************************************************************************/
     /**
@@ -65,12 +69,12 @@ public class RunShop {
     /**
      * A string to the directory of the Car Data CSV file.
      */
-    private static String carSourceCSV = "../data/car_data.csv";
+    private static String carSourceCSV = DATADIR + "/car_data.csv";
 
     /**
      * A string to the directory of the User Data CSV file.
      */
-    private static String userSourceCSV = "../data/user_data.csv";
+    private static String userSourceCSV = DATADIR + "/user_data.csv";
     
     /**
      * A list containing all Tickets for each car purchased.
@@ -183,6 +187,10 @@ public class RunShop {
      * Login screen for users that enable them to display all cars, filter cars, purchase a car, view tickets, and sign out.
      */
     private static void userLogin() {
+        Log log = new Log(DATADIR, currentPerson.getUsername());
+        
+        log.addLogEntry("login", "");
+
         while (true) {
             // Avaiable options for Users.
             Utils.line();
