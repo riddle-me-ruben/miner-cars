@@ -208,17 +208,24 @@ public class RunShop {
 
             if (command == 1) {
                 displayAllCars(); // If the user enters 1, they wish to display all cars.
+                log.addLogEntry("view cars", "");
             } 
             else if (command == 2) {
                 filterCars(); // If the user enters 2, they wish to filter the cars based on condition.
+                log.addLogEntry("filter cars", "");
             } 
             else if (command == 3) {
-                purchaseCar(); // If the user enters 3, they wish to purchase a car.
+                int id = purchaseCar(); // If the user enters 3, they wish to purchase a car.
+                if (id != -1) {
+                    log.addLogEntry("purchase car", "User bought car " + id);
+                }
             } 
             else if (command == 4) {
                 viewTickets(); // If the user enters 4, they wish to view their tickets.
+                log.addLogEntry("view tickets", "");
             } 
             else if (command == 0) {
+                log.addLogEntry("logout", "");
                 return; // If the user enters 0, they wish to sign out.
             } 
             else {
@@ -305,8 +312,9 @@ public class RunShop {
 
     /**
      * Allows user to purchase a car.
+     * @return The car ID if the purchase was successful, else -1.
      */
-    private static void purchaseCar() {
+    private static int purchaseCar() {
         User currentUser = (User) currentPerson; // Cast the currentUser to a User type.
         while(true) {
             Utils.line();
@@ -325,7 +333,7 @@ public class RunShop {
             Utils.clear();
             
             if (command == 0) {
-                return; // If the user enters 0, they wish to go back.
+                return -1; // If the user enters 0, they wish to go back.
             }
             else if (command == -1) {
                 System.out.println("Invalid command"); // In case the user enters an invalid command.
@@ -377,14 +385,13 @@ public class RunShop {
 
                     // Inform the user they successfully purchased the car.
                     System.out.println("Successfully purchased:\n" + desiredCar);
-
-                    // TODO: Add to log
-                    // addToLog() - TODO by Ashkan
+                    return desiredCar.getCarID();
 
                 }
                 // Inform the user that they do not possess sufficient funds.
                 else {
                     System.out.println("Sorry,\n" + desiredCar + "\ncosts $" + desiredCar.getPrice() + " but you only have $" + currentUser.getBalance());
+                    
                 }
             }
         }
