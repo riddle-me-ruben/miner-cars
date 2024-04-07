@@ -44,11 +44,6 @@ public abstract class Person {
      * ID of the person.
      */
     private int id;
-    
-    /**
-     * Email address of the person.
-     */
-    private String emailAddress;
 
     // getter & setters
     /************************************************************************/
@@ -90,14 +85,6 @@ public abstract class Person {
 
     public void setIdNumber(int id) {
         this.id = id;
-    }
-
-    public String getEmailAddress() {
-        return emailAddress;
-    }
-
-    public void setEmailAddress(String emailAddress) {
-        this.emailAddress = emailAddress;
     }
     /************************************************************************/
 

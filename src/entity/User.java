@@ -34,21 +34,30 @@ public class User extends Person {
      * Balance of the user.
      */
     private double balance;
-
+    
     /**
      * Number of cars purchased by the user.
      */
     private int carsPurchased;
-
+    
     /**
      * True if the user is a member, false if the user is not a member.
      */
     private boolean isMember;
-
+    
     /**
      * A list of all the cars purchased by the user.
      */
     private ArrayList<Ticket> tickets;
+    
+    /**
+     * Allows user to view their purchased cars.
+     */
+    public void viewTickets() {
+        for (Ticket t : getTickets()) {
+            System.out.println(t);
+        }
+    }
 
     /**
      * Aesthetics for printing.
@@ -63,13 +72,13 @@ public class User extends Person {
         getIsMember() + "\t" + 
         getUsername() + "\t";
     }
-
+    
     // getters & setters
     /************************************************************************/
     public double getBalance() {
         return balance;
     }
-
+    
     public void setBalance(double balance) {
         this.balance = balance;
     }
@@ -98,10 +107,5 @@ public class User extends Person {
         return tickets;
     }
 
-    public void viewTickets() {
-        for (Ticket t : getTickets()) {
-            System.out.println(t);
-        }
-    }
     /************************************************************************/
 }
