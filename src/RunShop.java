@@ -12,10 +12,10 @@
  * James Newson
  * Ruben Martinez
  * 
- * Date: April 6th, 2024
+ * Date: April 11th, 2024
  * Course: CS 3331 Advanced Object Oriented Programming
  * Instructor: Bhanukiran Gurijala
- * Programming Assignment : 1
+ * Programming Assignment : 2
  * 
  * Description: The system offers both brand new and used cars for a car dealership Mine Cars. It provides
  * a wide variety of different models with varying prices and mileage to satisfy customers. Customers have budgets
@@ -46,7 +46,7 @@ import UI.*;
  * @author Ashkan Arabi
  * @author James Newson
  * @author Ruben Martinez
- * @version 1.0
+ * @version 2.0
  */
 public class RunShop {
 
@@ -278,37 +278,25 @@ public class RunShop {
             Utils.clear();
 
             switch(command) {
-                case(1): {displayFilteredCars(true);} break; // If the user enters 1, they wish to display new cars.
-                case(2): {displayFilteredCars(false);} break; // If the user enters 2, they wish to display used cars.
+                case(1): {
+                    for (Car car : cars) {
+                        if (car.isNew()) {
+                            System.out.println(car); // Display new cars
+                        }
+                    }
+                } break;
+                case(2): {
+                    for (Car car : cars) {
+                        if (!car.isNew()) {
+                            System.out.println(car); // Display used cars 
+                        }
+                    }
+                } break; // If the user enters 2, they wish to display used cars.
                 case(3): return; // If the user enters 3, they wish to exit this menu.
                 default: System.out.println("Invalid command"); continue; // In case the user enters an invalid command.
             }
         }
     }
-
-    /**
-     * Displays used or new cars depending on what the user desires.
-     * @param printNew True if user wants to print new cars, false if user wants to print used cars.
-     */
-    private static void displayFilteredCars(boolean printNew) {
-        // The user wishes to display new cars.
-        if (printNew) {
-            for (Car car : cars) {
-                if (car.isNew()) {
-                    System.out.println(car);
-                }
-            }
-        }
-        // The user wishes to display used cars.
-        else {
-            for (Car car : cars) {
-                if (!car.isNew()) {
-                    System.out.println(car);
-                }
-            }
-        }
-    }
-
 
     /**
      * Allows user to purchase a car.
@@ -350,7 +338,16 @@ public class RunShop {
                     continue;
                 }
                 // Verify the user has sufficient funds.
-                if (currentUser.getBalance() >= desiredCar.getPrice()) {
+                double subTotal = desiredCar.getPrice();
+
+                // Apply discount if user is a member
+                if (currentUser.getIsMember()) {
+                    subTotal = Math.round((subTotal - (.10 * subTotal)) * 100.0) / 100.0;
+                }
+                // Add taxes
+                double total = Math.round((subTotal + (.0625 * subTotal)) * 100.0) / 100.0;
+                System.out.println("Total: " + total + "\nSubtotal: " + subTotal);
+                if (currentUser.getBalance() >= total) {
 
                     // Confirm the user wants to proceed with the purchase.
                     if(!confirmPurchase(desiredCar)) {
@@ -358,7 +355,7 @@ public class RunShop {
                     }
 
                     // Create a receipt since the desired vehicle is in stock, the user has sufficient funds, and the user wishes to proceed.
-                    Ticket receipt = new Ticket(desiredCar.getType(), desiredCar.getModel(), 0000, desiredCar.getColor(), currentUser.getFirstName() + " " + currentUser.getLastName());
+                    Ticket receipt = new Ticket(desiredCar.getType(), desiredCar.getModel(), desiredCar.getYear(), desiredCar.getColor(), currentUser.getFirstName() + " " + currentUser.getLastName());
                     
                     // Add the receipt to the user's list of tickets.
                     currentUser.addTicket(receipt);
@@ -366,21 +363,18 @@ public class RunShop {
                     // Add the receipt to the shop's list of tickets.
                     allTickets.add(receipt);
 
-
-                    // Update the user's balance.
-                    currentUser.setBalance(Math.round((currentUser.getBalance() - desiredCar.getPrice()) * 100.0) / 100.0);
-
+                    
                     // Update the user's number of cars purchased.
                     currentUser.setCarsPurchased(currentUser.getCarsPurchased() + 1);
-
+                    
                     // Update the number of vehicles remaining for the car object.
                     desiredCar.setVehiclesRemaining(desiredCar.getVehiclesRemaining() - 1);
                     
                     // Subtract 1 from the count of cars in the CSV file.
-
                     decrementCarFromCSV(desiredCar.getCarID());
 
                     // Update the user's balance.
+                    currentUser.setBalance(Math.round((currentUser.getBalance() - total) * 100.0) / 100.0);
                     updateBalanceInCSV(currentUser);
 
                     // Inform the user they successfully purchased the car.
@@ -423,7 +417,6 @@ public class RunShop {
     }
 
     /**
-
      * Decrements the count of a specific vehicle in the car data CSV by 1 because it was purchased.
      * @param id The ID of the car to be decremented.
      */
@@ -437,10 +430,10 @@ public class RunShop {
             writer.write(scanner.nextLine() + "\n");
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
-                String[] parts = line.split(",");
-                int idToRemove = Integer.parseInt(parts[0]);
+                String[] parts = line.split(",", -1);
+                int idToRemove = Integer.parseInt(parts[CarFactory.columnMapIndices.get("ID")]);
                 if (id == idToRemove) {
-                    parts[11] = "" + (cars.get(id - 1).getVehiclesRemaining());
+                    parts[CarFactory.columnMapIndices.get("Cars Available")] = "" + (cars.get(id - 1).getVehiclesRemaining());
                     line = String.join(",", parts);
                 }
                 writer.write(line + "\n");
@@ -513,6 +506,9 @@ public class RunShop {
         for(Ticket ticket : allTickets) {
             System.out.println(ticket);
         }
+        System.out.println("");
+        System.out.println("Row content:");
+        System.out.println("[Type \t Model \t Year \t Color \t Owner]");
     }
 
     /**
@@ -567,18 +563,16 @@ public class RunShop {
         Scanner csvCarScanner; // Scanner to scan the input.
         try {
             csvCarScanner = new Scanner(f); // Initialize the scanner with the File object.
-            csvCarScanner.nextLine(); // Skip the first line.
 
+            // Grab the column headers to dynamically assign attributes in ordering of CSV changes
+            String[] columnHeaders = csvCarScanner.nextLine().split(",");
+            CarFactory.setHeaders(columnHeaders);
             // Continue scanning while the file has lines.
             while (csvCarScanner.hasNextLine()) {
-                String[] line = csvCarScanner.nextLine().split(",");
-                // Initialize the appropriate Car object depending on the type and add to ArrayList.
-                switch(line[1]) {
-                    case("SUV"): {cars.add(new SUV(line)); break;}
-                    case("Sedan"): {cars.add(new Sedan(line)); break;}
-                    case("Pickup"): {cars.add(new Pickup(line)); break;}
-                    case("Hatchback"): {cars.add(new Hatchback(line)); break;}
-                }
+                String[] line = csvCarScanner.nextLine().split(",", -1);
+                // Initialize the appropriate Car object using Factory Pattern depending on the type and add to ArrayList.
+                Car car = CarFactory.createCar(line);
+                cars.add(car);
             }
             csvCarScanner.close(); // Close the scanner.
         }
