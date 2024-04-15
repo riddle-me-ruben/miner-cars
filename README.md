@@ -4,7 +4,7 @@ Group assignment for Dr. Gurijala's spring 24 object-oriented-programming class.
 ## Adding JavaDoc
 Change directory with: `cd src`
 
-Then run command: `javadoc -private -version -author -d JavaDoc -sourcepath src entity/*.java vehicles/*.java *.java`
+Then run command: `javadoc -private -version -author -d JavaDoc -sourcepath src UI/*.java datautils/*.java entity/*.java vehicles/*.java *.java`
 
 The `-private` argument ensures the comments for private variables are generated.
 
