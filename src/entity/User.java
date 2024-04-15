@@ -53,17 +53,15 @@ public class User extends Person {
     /**
      * Allows user to view their purchased cars.
      */
-    public void viewTickets() {
-        if (getTickets().isEmpty()) {
-            System.out.println("You have no tickets.");
-            return;
+    public String getTicketsList() {
+        String outstr = "";
+        for (Ticket ticket : tickets) {
+            outstr += ticket + "\n";
         }
-        for (Ticket t : getTickets()) {
-            System.out.println(t);
-        }
-        System.out.println("");
-        System.out.println("Row content:");
-        System.out.println("[Type \t Model \t Year \t Color \t Owner]");
+
+        outstr += Ticket.getLegend();
+
+        return outstr;
     }
 
     /**
@@ -79,7 +77,15 @@ public class User extends Person {
         getIsMember() + "\t" + 
         getUsername() + "\t";
     }
-    
+
+    public static String getLegend() {
+        String outstr = "\n";
+        outstr += "Row content:\n";
+        outstr += "[ID \t First Name \t Last Name \t Money Available \t Cars Purchased \t MinerCars Membership \t Username]";
+
+        return outstr;
+    }
+
     // getters & setters
     /************************************************************************/
     public double getBalance() {

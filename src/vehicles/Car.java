@@ -1,9 +1,6 @@
 package vehicles;
-// import statements
+
 import java.util.HashMap;
-/************************************************************************/
-import UI.Utils;
-/************************************************************************/
 
 /**
  * Car class that is abstract and describes the state of a car.
@@ -27,7 +24,7 @@ public abstract class Car {
         this.price = Double.parseDouble(contents.get("Price"));
         this.vehiclesRemaining = Integer.parseInt(contents.get("Cars Available"));
         this.year = Integer.parseInt(contents.get("Year"));
-        this.hasTurbo = contents.get("hasTurbo").equals("") || contents.get("hasTurbo").equals("No") ? false : true;
+        this.hasTurbo = contents.get("hasTurbo").equals("Yes");
     }
 
     /**
@@ -107,7 +104,6 @@ public abstract class Car {
      */
     @Override
     public String toString() {
-        Utils.longerLine();
         return 
         getCarID() + "\t" + 
         getType() + "\t" + 
@@ -123,7 +119,18 @@ public abstract class Car {
         getVehiclesRemaining() + "\t" +
         getHasTurbo() + "\t" +
         getYear();
+    }
 
+    /**
+     * Returns the legend to show the order that the toString method prints cars.
+     * Try using this whenever you print any car information.
+     */
+    public static String getLegend() {
+        String outstr = "\n";
+        outstr += "Row content:\n";
+        outstr += "[ID \t Type \t Mode \t Condition \t Color \t Capacity \t Mileage \t Fuel Type \t Transmission Type \t VIN \t Price \t Cars Available]";
+
+        return outstr;
     }
     
     // getters and setters

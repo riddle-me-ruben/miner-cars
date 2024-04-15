@@ -1,5 +1,4 @@
 package entity;
-import UI.*;
 /**
  * Serves as proof of purchase to customer by containing relevant information such as the car type, model, year, and color
  */
@@ -45,13 +44,24 @@ public class Ticket {
      */
     private String owner;
 
-    /*
+    /**
      * Aesthetics for printing.
      */
     @Override
     public String toString() {
-        Utils.longerLine();
-        return getType() + "\t" + getModel() + "\t" + getYear() + "\t" + getColor() + "\tOwner: " + getOwner();
+        return getType() + "\t" + getModel() + "\t" + getYear() + "\t" + getColor() + "\t" + getOwner();
+    }
+
+    /**
+     * Returns the legend to show the order that the toString method prints cars.
+     * Try using this whenever you print any car information.
+     */
+    public static String getLegend() {
+        String outstr = "\n";
+        outstr += "Row content:\n";
+        outstr += "[Car Type \t Car Model \t Car Year \t Car Color \t Owner]";
+
+        return outstr;
     }
 
     // getters and setters
