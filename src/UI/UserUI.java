@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import datautils.Log;
 import entity.User;
+import vehicles.Car;
 
 /**
  * Login screen for users that enable them to display all cars, filter cars, purchase a car, view tickets, and sign out.

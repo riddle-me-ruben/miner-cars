@@ -42,7 +42,7 @@ public abstract class Car implements CSVLoadable{
     public static String getLegend() {
         String outstr = "\n";
         outstr += "Row content:\n";
-        outstr += "[ID \t Type \t Mode \t Condition \t Color \t Capacity \t Mileage \t Fuel Type \t Transmission Type \t VIN \t Price \t Cars Available]";
+        outstr += "[ID \t Type \t Model \t Condition \t Color \t Capacity \t Mileage \t Fuel Type \t Transmission Type \t VIN \t Price \t Cars Available \t HasTurbo \t Year]";
 
         return outstr;
     }
@@ -147,6 +147,7 @@ public abstract class Car implements CSVLoadable{
      * Compares this car to another car in every field except the ID.
      * @return true if everythng except ID matches, false otherwise.
      */
+    @Override
     public boolean equals(Car otherCar) {
         return (
             this.getCapacity() == otherCar.getCapacity() &&
