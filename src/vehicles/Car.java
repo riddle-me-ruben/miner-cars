@@ -147,7 +147,6 @@ public abstract class Car implements CSVLoadable{
      * Compares this car to another car in every field except the ID.
      * @return true if everythng except ID matches, false otherwise.
      */
-    @Override
     public boolean equals(Car otherCar) {
         return (
             this.getCapacity() == otherCar.getCapacity() &&
