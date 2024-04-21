@@ -105,12 +105,13 @@ public class AdminUI extends UI{
                         }
                         catch (Exception e) {}
                         log.addLogEntry("remove car: " + id, "");
+                        Utils.clear();
                         System.out.println("Successfully removed car: " + id);
                     }
                     else {
+                        Utils.clear();
                         Utils.invalidInput();
                     }
-                    Utils.clear();
 
                 } else if (command == 8) {
                     String username = Utils.inputOneWord("Enter new user's username: ");
