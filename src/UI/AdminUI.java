@@ -5,7 +5,6 @@ import java.util.Arrays;
 
 import datautils.Log;
 import entity.Admin;
-import entity.User;
 
 public class AdminUI extends UI{
 
