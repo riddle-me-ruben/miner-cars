@@ -3,10 +3,13 @@ package datautils;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Scanner;
 
+import UI.Utils;
 import entity.User;
 import entity.Ticket;
 
@@ -147,6 +150,45 @@ public class UserCSVHandler extends CSVHandler {
     }
     
     /**
+     * 
+     * @param type The type of the car may be Hatchback, Sedan, SUV, or Pickup.
+     * @return A description of revenue by car type.
+     */
+    public String getRevenueByType(String type) {
+        int numberSold = 0;
+        double revenue = 0;
+        for (User user : users.values()) {
+            for (Ticket ticket : user.getTickets()) {
+                if (ticket.getType().equals(type)) {
+                    revenue += ticket.getPrice();
+                    numberSold++;
+                }
+            }
+        }
+        return "The shop has made $" + String.format("%.2f", revenue) + " from selling " + numberSold + " of type " + type; 
+    }
+
+    /**
+     * 
+     * @param id The id of the car.
+     * @return A description of revenue based on the ID of the car.
+     */
+    public String getRevenueByID(int id) {
+        
+        int numberSold = 0;
+        double revenue = 0;
+        for (User user : users.values()) {
+            for (Ticket ticket : user.getTickets()) {
+                if (ticket.getID() == id) {
+                    revenue += ticket.getPrice();
+                    numberSold++;
+                }
+            }
+        }
+        return "The shop has made $" + String.format("%.2f", revenue) + " from selling " + numberSold + " of car ID " + id; 
+    }
+
+    /**
      * Given a username and password, checks in the database to see if there's a match.
      * @return User object if there's a match, null if no match.
      */
@@ -160,5 +202,84 @@ public class UserCSVHandler extends CSVHandler {
         } else {
             return null;
         }
+    }
+
+    /**
+     * Adds a user to CSV file.
+     * @return true if successfully added, false otherwise.
+     */
+    public boolean addUser(String username) {
+        try {
+            double balance = Utils.inputOneDouble("Enter new user's balance: ");
+            String password = Utils.inputOneWord("Enter new user's password: ");
+            String lastName = Utils.inputOneWord("Enter new user's last name: ");
+            String firstName = Utils.inputOneWord("Enter new user's first name: ");
+            int id = getMaximumID() + 1;
+            boolean hasMembership = Utils.inputOneLineLoop("Does the new user have a membership? [Yes|No]: ", new String[] {"Yes", "No"}).equals("Yes");
+            User newUser = new User(id, firstName, lastName, username, password, balance, 0, hasMembership);
+            users.put(username, newUser);
+            updateCSV();
+        }
+        catch (IOException ioe) {
+            return false;
+        }
+        
+        return true;
+    }
+
+    /**
+     * @return the maximum id of the users.
+     */
+    public int getMaximumID() {
+        int max = Integer.MIN_VALUE;
+        for (User u : users.values()) {
+            if (u.getIdNumber() > max) {
+                max = u.getIdNumber();
+            }
+        }
+        return max;
+    }
+
+    /**
+     * Iterates through the users to ensure we cannot add a new user with a username that already exists.
+     */
+    public boolean userNameExists(String name) {
+        for (String username : users.keySet()) {
+            if (name.equalsIgnoreCase(username)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean returnCar(String username, int id) {
+        User selected_user = users.getOrDefault(username, null);
+        if (id < 0 || id >= CarCSVHandler.getInstance().getMaximumID()) {
+            System.out.println("Invalid car ID.");
+            return false;
+        }
+
+        boolean ownsCar = false;
+        Ticket reciept = null;
+        for (Ticket t : selected_user.getTickets()) {
+            if (t.getID() == id) {
+                reciept = t;
+                ownsCar = true;
+                break;
+            }
+        }
+
+        if (!ownsCar) {
+            System.out.println("You do not own car " + id);
+            return false;
+        }
+        else {
+            selected_user.setBalance(Math.round((selected_user.getBalance() + reciept.getPrice()) * 100.0) / 100.0);
+            selected_user.getTickets().remove(reciept);
+            selected_user.setCarsPurchased(selected_user.getCarsPurchased() - 1);
+            updateCSV();
+        }
+
+        return true;
     }
 }

@@ -223,7 +223,9 @@ public class CarCSVHandler extends CSVHandler {
             desiredCar.getModel(),
             desiredCar.getYear(),
             desiredCar.getColor(),
-            user.getFirstName() + " " + user.getLastName()
+            user.getFirstName() + " " + user.getLastName(),
+            desiredCar.getPrice(),
+            desiredCar.getCarID()
         );
         
         // Add the ticket to the user's list of tickets.
@@ -280,5 +282,69 @@ public class CarCSVHandler extends CSVHandler {
         updateCSV();
 
         return newCarID;
+    }
+
+    /**
+     * Removes a car from the ArrayList and the CAR CSV.
+     * @param id The id of the car to remove.
+     * @return True if the car was successfully removed, false otherwise.
+     */
+    public boolean removeCar(int id) {
+        Car carToRemove = null;
+        for (Car car : cars) {
+            if (car.getCarID() == id) {
+                carToRemove = car;
+                break;
+            }
+        }
+        if (carToRemove != null) {
+            cars.remove(carToRemove);
+            updateCSV();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Ensures the ID is in the arrayList of cars beforehand for tasks such as removing or obtaining revenue.
+     * @param id
+     * @return true if the cars arraylist has the ID, false otherwise.
+     */
+    public boolean validateID(int id) {
+        for (Car car : cars) {
+            if (car.getCarID() == id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns the maximum id of cars for tasks like returning a car or adding a car.
+     * @return maximum car id.
+     */
+    public int getMaximumID() {
+        int max = Integer.MIN_VALUE;
+        for (Car car : cars) {
+            if (car.getCarID() > max) {
+                max = car.getCarID();
+            }
+        }
+        return max;
+    }
+
+    public ArrayList<Car> getCars() {
+        return cars;
+    }
+
+    public boolean updateCarCount(int carIDToRemove) {
+        for (Car c : cars) {
+            if (c.getCarID() == carIDToRemove) {
+                c.setVehiclesRemaining(c.getVehiclesRemaining() + 1);
+                updateCSV();
+                return true;
+            }
+        }
+        return false;
     }
 }

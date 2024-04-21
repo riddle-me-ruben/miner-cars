@@ -5,6 +5,7 @@ import java.util.Arrays;
 
 import datautils.Log;
 import entity.Admin;
+import entity.User;
 
 public class AdminUI extends UI{
 
@@ -45,6 +46,10 @@ public class AdminUI extends UI{
                 System.out.println("2 - View all Tickets");
                 System.out.println("3 - Add new car");
                 System.out.println("4 - Display all cars"); // for convenience
+                System.out.println("5 - Get Revenue by ID");
+                System.out.println("6 - Get Revenue by Car Type");
+                System.out.println("7 - Remove a car");
+                System.out.println("8 - Add new user");
                 System.out.println("0 - Sign out");
     
                 // Prompt admin for desired action.
@@ -75,6 +80,51 @@ public class AdminUI extends UI{
                     System.out.println(CARDATA);
                     log.addLogEntry("view cars", "");
 
+                } else if (command == 5) {
+                    int id = Utils.inputOneInt("Enter ID of car: ");
+                    if (CARDATA.validateID(id)) {
+                        System.out.println(USERDATA.getRevenueByID(id));
+                        log.addLogEntry("view revenue of car: " + id, "");
+                    }
+                    else {
+                        Utils.invalidInput();
+                    }
+                } else if (command == 6) {
+                    String[] options = new String[] {"Hatchback", "Sedan", "SUV", "Pickup"};
+                    String type = Utils.inputOneLineLoop(
+                        "Enter car type [" + String.join("|", options) + "]: ",
+                        options);
+                    System.out.println(USERDATA.getRevenueByType(type));
+                    log.addLogEntry("view revenue of car type: " + type, "");
+
+                } else if (command == 7) {
+                    int id = Utils.inputOneInt("Enter ID of car to remove: ");
+                    if (CARDATA.validateID(id)) {
+                        // may crash unexpectedly.
+                        try {
+                            CARDATA.removeCar(id);
+                        }
+                        catch (Exception e) {}
+                        log.addLogEntry("remove car: " + id, "");
+                        System.out.println("Successfully removed car: " + id);
+                    }
+                    else {
+                        Utils.invalidInput();
+                    }
+                    Utils.clear();
+
+                } else if (command == 8) {
+                    String username = Utils.inputOneWord("Enter new user's username: ");
+                    if (USERDATA.userNameExists(username)) {
+                        System.out.println(username + " already exists.");
+                    }
+                    else if(USERDATA.addUser(username)) {
+                            System.out.println("Successfully added user: " + username);
+                            log.addLogEntry("added user " + username, "");
+                    }
+                    else {
+                        Utils.invalidInput();
+                    }
                 } else if (command == 0) {
                     log.addLogEntry("logout", "");
                     return;
