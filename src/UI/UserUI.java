@@ -75,7 +75,7 @@ public class UserUI extends UI{
                     int id = purchaseCar();
                     if (id != -1) {
                         // note: getCarStringByID takes a real ID with a +1 offset, not the index.
-                        log.addLogEntry("purchase car", "User bought car " + CARDATA.getCarStringByID(id + 1));
+                        log.addLogEntry("purchase car", "User bought car " + CARDATA.getCarByID(id));
                     }
                 } 
                 else if (command == 4) {
@@ -176,13 +176,15 @@ public class UserUI extends UI{
                 if (id == 0) {
                     return -1; // If the user enters 0, they wish to go back.
                 } 
-                if (!(CARDATA.validateID(id))) {
-                    Utils.invalidInput();
-                    return -1;
-                }
+
+                // // TODO: remove me
+                // if (!(CARDATA.validateID(id))) {
+                //     Utils.invalidInput();
+                //     return -1;
+                // }
                 // TODO - this system may need to be revised to provide more detailed info
                 // I had to simplify these errors to make it easier to decouple the UI from the data
-                double[] totalAndSubTotalOrStatus = CARDATA.validatePurchase(id - 1, currentUser);
+                double[] totalAndSubTotalOrStatus = CARDATA.validatePurchase(id, currentUser);
     
                 if (totalAndSubTotalOrStatus[0] < 0) {
                     if (totalAndSubTotalOrStatus[0] == -1) {
@@ -200,18 +202,18 @@ public class UserUI extends UI{
                 // Confirm the user wants to proceed with the purchase.
                 double subtotal = totalAndSubTotalOrStatus[0];
                 double total = totalAndSubTotalOrStatus[1];
-                if(!confirmPurchase(id - 1, subtotal, total)) {
+                if(!confirmPurchase(id, subtotal, total)) {
                     continue;
                 }
     
-                int purchaseStatus = CARDATA.purchaseCar(id - 1, currentUser, total);
+                int purchaseStatus = CARDATA.purchaseCar(id, currentUser, total);
     
                 if (purchaseStatus == -1) {
                     System.out.println("Purchase failed...");
                 } else {
                     // Inform the user they successfully purchased the car.
-                    System.out.println("Successfully purchased:\n" + CARDATA.getCarStringByID(id));
-                    return id - 1;
+                    System.out.println("Successfully purchased:\n" + CARDATA.getCarByID(id));
+                    return id;
                 }
             } catch (IOException e) {
                 Utils.clear();
@@ -233,7 +235,7 @@ public class UserUI extends UI{
                 System.out.println();
     
                 System.out.println("Are you sure you want to purchase?");
-                System.out.println(CARDATA.getCarStringByID(carID + 1)); // converted to real id with offset
+                System.out.println(CARDATA.getCarByID(carID)); // converted to real id with offset
                 
                 // Available options.
                 Utils.line();

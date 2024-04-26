@@ -159,11 +159,18 @@ public class CarCSVHandler extends CSVHandler {
     }
 
     /**
-     * Get car's info in string form based on its ID
-     * @param id The real ID of the car (with a +1 offset relative to the index)
+     * Get a car object based on the ID
+     * @return Car object matching ID, or null if no match.
      */
-    public String getCarStringByID(int id) {
-        return "" + cars.get(id - 1);
+    public Car getCarByID(int id) {
+        Car desiredCar = null;
+        for (int i = 0; i < cars.size(); i++) {
+            if (cars.get(i).getCarID() == id) {
+                desiredCar = cars.get(i);
+            }
+        }
+
+        return desiredCar;
     }
 
     public String[] getCsvColumns() {
@@ -178,11 +185,11 @@ public class CarCSVHandler extends CSVHandler {
      * @return {-3} if insufficient funds
      */
     public double[] validatePurchase(int id, User user) {
-        if (id < 0 || id >= cars.size()) {
-            return new double[] {-1}; // invalid ID
-        } 
+        Car desiredCar = getCarByID(id);
         
-        Car desiredCar = cars.get(id); // Obtain the car the user wishes to purchase.
+        if (desiredCar == null) {
+            return new double[] {(double) -1};
+        }
 
         // In case desired car is out of stock, inform the user.
         if(desiredCar.getVehiclesRemaining() == 0) {
@@ -215,7 +222,7 @@ public class CarCSVHandler extends CSVHandler {
         
         // Obtain the car the user wishes to purchase. 
         // At this piont we assume the id is always correct.
-        Car desiredCar = cars.get(id); 
+        Car desiredCar = getCarByID(id); 
 
         // Create a ticket
         Ticket ticket = new Ticket(

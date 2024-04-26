@@ -71,7 +71,7 @@ public class AdminUI extends UI{
 
                     // add to log only if successfully added
                     if (newCarID > 0) {
-                        log.addLogEntry("add car: ", CARDATA.getCarStringByID(newCarID));
+                        log.addLogEntry("add car: ", "" + CARDATA.getCarByID(newCarID));
                     }
 
                 } else if (command == 4) {
