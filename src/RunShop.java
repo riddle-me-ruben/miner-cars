@@ -12,10 +12,10 @@
  * James Newson
  * Ruben Martinez
  * 
- * Date: April 11th, 2024
+ * Date: April 27th, 2024
  * Course: CS 3331 Advanced Object Oriented Programming
  * Instructor: Bhanukiran Gurijala
- * Programming Assignment : 2
+ * Programming Assignment : 3
  * 
  * Description: The system offers both brand new and used cars for a car dealership Mine Cars. It provides
  * a wide variety of different models with varying prices and mileage to satisfy customers. Customers have budgets
@@ -56,6 +56,7 @@ public class RunShop {
             Utils.line();
             System.out.println("Welcome to Mine Cars!");
             System.out.println("Note: for admin login, use 'admin' for both username & password.");
+            System.out.println("Enter Ctrl + C to exit.");
             System.out.println();
     
             // Username and password prompts.
@@ -66,10 +67,11 @@ public class RunShop {
             Utils.clear();
             
 
-            // try logging in, print incorrect password message if failed
-            if (! login(username, password)) {
+            // Try logging in, print incorrect password message if failed.
+            if (!login(username, password)) {
                 System.out.println("Username or password incorrect.");
-            } else {
+            } 
+            else {
                 System.out.println("Logged out.");
             }
         }
@@ -77,8 +79,9 @@ public class RunShop {
 
     /**
      * Tries to log in as user or admin based on given credentials.
-     * 
-     * @return true if login successful, false otherwise.
+     * @param username The username of the person attempting to login.
+     * @param password The password of the person attempting to login.
+     * @return True if login successful, false otherwise.
      */
     private static boolean login(String username, String password) {
         return (
