@@ -4,7 +4,6 @@ import java.util.Arrays;
 import datautils.CarNotFoundException;
 import datautils.Log;
 import entity.Admin;
-import vehicles.Car;
 
 /**
  * Login screen for admins that enable them to interact with the system.
