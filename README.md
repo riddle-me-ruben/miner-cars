@@ -1,4 +1,4 @@
-# OOP-project-1
+# Miners-Cars
 Group assignment for Dr. Gurijala's spring 24 object-oriented-programming class.
 
 ## Adding JavaDoc
